@@ -44,29 +44,56 @@ class TestAccount:
         assert account.balance == 0.0
 
     def test_promo_po_60_2005(self):
-        account = Account("John", "Doe", "05221212121", "PROM_XYZ")
+        account = Account("John", "Doe", "05220000000", "PROM_XYZ")
         assert account.balance == 50.0
 
     def test_promo_do_60_1950(self):
-        account = Account("John", "Doe", "50121212121", "PROM_XYZ")
+        account = Account("John", "Doe", "50120000000", "PROM_XYZ")
         assert account.balance == 0.0
 
     def test_promo_do_60_1960(self):
-        account = Account("John", "Doe", "60121212121", "PROM_XYZ")
+        account = Account("John", "Doe", "60120000000", "PROM_XYZ")
         assert account.balance == 0.0
         
     def test_promo_do_60_1961(self):
-        account = Account("John", "Doe", "61121212121", "PROM_XYZ")
+        account = Account("John", "Doe", "61120000000", "PROM_XYZ")
         assert account.balance == 50.0
 
     def test_promo_do_60_2160(self):
-        account = Account("John", "Doe", "60421212121", "PROM_XYZ")
+        account = Account("John", "Doe", "60420000000", "PROM_XYZ")
         assert account.balance == 50.0
 
     def test_promo_do_60_2060(self):
-        account = Account("John", "Doe", "60301212121", "PROM_XYZ")
+        account = Account("John", "Doe", "60300000000", "PROM_XYZ")
         assert account.balance == 50.0
 
     def test_promo_do_60_2199(self):
-        account = Account("John", "Doe", "99471212121", "PROM_XYZ")
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
         assert account.balance == 50.0
+
+    def test_money_transfer_outocming(self):
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account.outcoming_transfer(50.0)
+        assert account.balance == 0.0
+
+    def test_money_transfer_incoming(self):
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account.incoming_transfer(50.0)
+        assert account.balance == 100.0
+
+    def test_money_transfer_not_enough_money(self):
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account.outcoming_transfer(100.0)
+        assert account.balance == 50.0
+    
+    def test_money_transfer_incoming_and_outcoming(self):
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account.incoming_transfer(100.0)
+        account.outcoming_transfer(50.0)
+        assert account.balance == 100.0
+
+    def test_money_transfer_outcoming_and_incoming(self):
+        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account.outcoming_transfer(10.0)
+        account.incoming_transfer(50.0)
+        assert account.balance == 90.0
