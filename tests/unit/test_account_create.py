@@ -1,5 +1,5 @@
 from src.account import Account
-
+from src.account import ProfessionalAccount
 
 class TestAccount:
     def test_account_creation(self):
@@ -77,23 +77,44 @@ class TestAccount:
         assert account.balance == 0.0
 
     def test_money_transfer_incoming(self):
-        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account = Account("John", "Doe", "99470000000")
+        account.balance = 50.0
         account.incoming_transfer(50.0)
         assert account.balance == 100.0
 
     def test_money_transfer_not_enough_money(self):
-        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account = Account("John", "Doe", "99470000000")
+        account.balance = 50.0
         account.outcoming_transfer(100.0)
         assert account.balance == 50.0
     
     def test_money_transfer_incoming_and_outcoming(self):
-        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account = Account("John", "Doe", "99470000000")
+        account.balance = 50.0
         account.incoming_transfer(100.0)
         account.outcoming_transfer(50.0)
         assert account.balance == 100.0
 
     def test_money_transfer_outcoming_and_incoming(self):
-        account = Account("John", "Doe", "99470000000", "PROM_XYZ")
+        account = Account("John", "Doe", "99470000000")
+        account.balance = 50.0
         account.outcoming_transfer(10.0)
         account.incoming_transfer(50.0)
         assert account.balance == 90.0
+
+    def test_professional_acocunt_NIP_valid(self):
+        account = ProfessionalAccount("Company", "1234567890")
+        assert account.NIP == "1234567890"
+
+
+    def test_professional_acocunt_NIP_too_long(self):
+        account = ProfessionalAccount("Company", "123456789000000")
+        assert account.NIP == "Invalid"
+
+    def test_professional_acocunt_NIP_not_only_digits(self):
+        account = ProfessionalAccount("Company", "123456abcd")
+        assert account.NIP == "Invalid"
+
+    def test_professional_acocunt_NIP_too_short(self):
+        account = ProfessionalAccount("Company", "123")
+        assert account.NIP == "Invalid"
