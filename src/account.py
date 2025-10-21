@@ -51,3 +51,14 @@ class ProfessionalAccount:
         if len(NIP) == 10 and NIP.isdigit():
             return True
         return False
+    def is_transfer_amount_correct(self, amount):
+        return self.balance >= amount and amount > 0
+        
+    def outcoming_transfer(self, amount):
+        if self.is_transfer_amount_correct(amount):
+            self.balance -= amount
+        else:
+            print("Not enought balance.")
+    
+    def incoming_transfer(self, amount):
+        self.balance += amount

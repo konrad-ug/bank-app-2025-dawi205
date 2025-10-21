@@ -118,3 +118,19 @@ class TestAccount:
     def test_professional_acocunt_NIP_too_short(self):
         account = ProfessionalAccount("Company", "123")
         assert account.NIP == "Invalid"
+    
+    def test_professional_acocunt_incoming_and_outcoming_transfer(self):
+        account = ProfessionalAccount("Company", "1234567890")
+        account.incoming_transfer(100.0)
+        account.outcoming_transfer(60.0)
+        assert account.balance == 40.0
+    
+    def test_professional_acocunt_outcoming_transfer(self):
+        account = ProfessionalAccount("Company", "1234567890")
+        account.outcoming_transfer(60.0)
+        assert account.balance == 0.0
+
+    def test_professional_acocunt_intcoming_transfer(self):
+        account = ProfessionalAccount("Company", "1234567890")
+        account.incoming_transfer(60.0)
+        assert account.balance == 60.0
