@@ -30,4 +30,13 @@ class PersonalAccount(Account):
             year += 2100
         
         return year > 1960 # zwraca True lub False
+
+
+    def is_express_transfer_amount_correct(self, amount):
+        return self.balance >= amount and amount > 0
     
+    def express_outcoming_transfer(self, amount):
+        if self.is_express_transfer_amount_correct(amount):
+            self.balance -= (amount + 1)
+        else:
+            "Not enought balance."

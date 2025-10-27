@@ -24,6 +24,6 @@ class ProfessionalAccount(Account):
     
     def express_outcoming_transfer(self, amount):
         if self.is_transfer_amount_correct(amount):
-            self.balance -= (amount + 1)
+            self.balance -= (amount + 5)
         else:
             "Not enought balance."
