@@ -45,4 +45,4 @@ class TestProfessioinalAccount:
         account = ProfessionalAccount("Company", "1234567890")
         account.balance = 52.0
         account.express_outcoming_transfer(50.0)
-        assert account.balance == -3.0
+        assert account.balance == -3.0 
