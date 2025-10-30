@@ -10,3 +10,9 @@ class Account:
     
     def incoming_transfer(self, amount):
         self.balance += amount
+  
+    def outcoming_express_transfer(self, amount):
+        if self.is_transfer_amount_correct(amount):
+            self.balance -= amount + self.express_fee
+        else:
+            "Not enought balance."

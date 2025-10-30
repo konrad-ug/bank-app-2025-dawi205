@@ -14,13 +14,13 @@ class TestPersonalAccount:
     def test_express_transfer(self):
         account = PersonalAccount("John", "Doe", "12345678901")
         account.balance = 50.0
-        account.express_outcoming_transfer(50.0)
+        account.outcoming_express_transfer(50.0)
         assert account.balance == -1.0
 
     def test_express_transfer_too_much(self):
         account = PersonalAccount("John", "Doe", "12345678901")
         account.balance = 50.0
-        account.express_outcoming_transfer(60.0)
+        account.outcoming_express_transfer(60.0)
         assert account.balance == 50.0
 
     def test_account_pesel_too_long(self):
