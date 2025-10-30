@@ -10,4 +10,4 @@ class ProfessionalAccount(Account):
     def is_NIP_valid(self, NIP):
         if len(NIP) == 10 and NIP.isdigit():
             return True
-        return False
+        return False 
