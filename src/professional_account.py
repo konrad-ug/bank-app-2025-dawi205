@@ -2,6 +2,7 @@ from src.account import Account
 
 class ProfessionalAccount(Account): 
     def __init__(self, company_name, NIP):
+        super().__init__()
         self.company_name = company_name
         self.balance = 0.0
         self.NIP = NIP if self.is_NIP_valid(NIP) else "Invalid"
