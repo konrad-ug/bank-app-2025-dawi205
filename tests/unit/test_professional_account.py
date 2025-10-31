@@ -38,17 +38,17 @@ class TestProfessioinalAccount:
     def test_express_professional_transfer(self):
         account = ProfessionalAccount("Company", "1234567890")
         account.balance = 50.0
-        account.express_outcoming_transfer(50.0)
+        account.outcoming_express_transfer(50.0)
         assert account.balance == -5.0
 
     def test_express_professional_transfer_different(self):
         account = ProfessionalAccount("Company", "1234567890")
         account.balance = 52.0
-        account.express_outcoming_transfer(50.0)
+        account.outcoming_express_transfer(50.0)
         assert account.balance == -3.0 
 
     def test_express_professional_transfer_not_enought(self):
         account = ProfessionalAccount("Company", "1234567890")
         account.balance = 52.0
-        account.express_outcoming_transfer(60.0)
+        account.outcoming_express_transfer(60.0)
         assert account.balance == 52.00 
