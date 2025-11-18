@@ -9,17 +9,19 @@ class Account:
         if self.is_transfer_amount_correct(amount):
             self.balance -= amount
             self.history.append(-amount)
+            return True
         else:
-            "Not enought balance."
+            return False
     
     def incoming_transfer(self, amount):
         self.balance += amount
         self.history.append(amount)
-  
+
     def outcoming_express_transfer(self, amount):
         if self.is_transfer_amount_correct(amount):
             self.balance -= amount + self.express_fee
             self.history.append(-amount)
             self.history.append(-self.express_fee)
+            return True
         else:
-            "Not enought balance."
+            return False
