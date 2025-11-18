@@ -113,3 +113,33 @@ class TestPersonalAccount:
         account.outcoming_transfer(10.0)
         account.incoming_transfer(50.0)
         assert account.balance == 90.0
+
+    def test_submit_for_loan_last_3_positive(self):
+        account = PersonalAccount("John", "Doe", "99470000000")
+        account.incoming_transfer(20.0)
+        account.outcoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.submit_for_loan(20.0)
+        assert account.balance == 60.0
+
+    def test_submit_for_loan_last_3_not_positive(self):
+        account = PersonalAccount("John", "Doe", "99470000000")
+        account.incoming_transfer(20.0)
+        account.outcoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.outcoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.submit_for_loan(20.0)
+        assert account.balance == 20.0
+
+    def test_submit_for_loan_last_3_positive_with_express(self):
+        account = PersonalAccount("John", "Doe", "99470000000")
+        account.incoming_transfer(20.0)
+        account.outcoming_express_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.incoming_transfer(10.0)
+        account.submit_for_loan(20.0)
+        assert account.balance == 39.0
