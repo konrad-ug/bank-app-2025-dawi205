@@ -9,7 +9,6 @@ class PersonalAccount(Account):
         self.pesel = pesel if self.is_pesel_valid(pesel) else "Invalid"
         self.express_fee = 1.0
 
-    
     def is_pesel_valid(self, pesel):
         if len(pesel) == 11 and pesel.isdigit():
             return True
