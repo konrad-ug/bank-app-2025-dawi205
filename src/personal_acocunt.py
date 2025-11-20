@@ -32,3 +32,9 @@ class PersonalAccount(Account):
             year += 2100
         
         return year > 1960 # zwraca True lub False
+    
+    def submit_for_loan(self, amount):
+        if (self.history[-1] > 0.0 and self.history[-2] > 0.0 and self.history[-3] > 0.0) or (len(self.history) >= 5 and sum(self.history[-5:]) >= amount):
+            self.balance += amount
+            return True    
+        return False

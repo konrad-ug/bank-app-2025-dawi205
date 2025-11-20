@@ -5,7 +5,7 @@ class ProfessionalAccount(Account):
         super().__init__()
         self.company_name = company_name
         self.balance = 0.0
-        self.NIP = NIP if self.is_NIP_valid(NIP) else "Invalid"
+        self.NIP = NIP if self.is_NIP_valid(NIP) else False
         self.express_fee = 5.0
 
     def is_NIP_valid(self, NIP):
