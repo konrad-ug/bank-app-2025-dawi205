@@ -12,3 +12,14 @@ class ProfessionalAccount(Account):
         if len(NIP) == 10 and NIP.isdigit():
             return True
         return False 
+    
+    def is_ZUS_paid(self, history):
+        if -1775 in history:
+            return True
+        return False
+    
+    def take_loan(self, amount):
+        if (self.is_ZUS_paid(self.history)) and (self.balance >= amount*2):
+            self.balance += amount
+            return True
+        return False
