@@ -37,3 +37,24 @@ class PersonalAccount(Account):
             self.balance += amount
             return True    
         return False
+
+    def __repr__(self):
+        return f"({self.first_name} {self.last_name}, PESEL={self.pesel})"
+class AccountRegistry:
+    def __init__(self):
+        self.accounts = []
+
+    def add_account(self, account: PersonalAccount):
+        self.accounts.append(account)
+
+    def find_by_pesel(self, pesel):
+        for account in self.accounts:
+            if account.pesel == pesel:
+                return account
+        return None
+    
+    def get_all_accounts(self):
+        return self.accounts
+
+    def number_of_accounts(self):
+        return len(self.accounts)

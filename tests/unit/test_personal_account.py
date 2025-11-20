@@ -1,5 +1,6 @@
 import pytest
 from src.personal_acocunt import PersonalAccount
+from src.personal_acocunt import AccountRegistry
 
 @pytest.fixture
 def create_account():
@@ -11,7 +12,24 @@ def create_account():
 def account_with_50_balance(create_account):
     account = create_account()
     account.balance = 50
+    account.first_name = "Tom"
     return account
+
+@pytest.fixture
+def clear_registration():
+    return AccountRegistry()
+
+@pytest.fixture
+def registry_with_accounts(create_account):
+    registry = AccountRegistry()
+    registry.add_account(create_account(pesel="00000000000"))
+    registry.add_account(create_account(pesel="11111111111"))
+    registry.add_account(create_account(pesel="22222222222"))
+    registry.add_account(create_account(pesel="33333333333"))
+    registry.add_account(create_account(pesel="44444444444"))
+    registry.add_account(create_account(pesel="55555555555"))
+    registry.add_account(create_account(pesel="66666666666"))
+    return registry
 
 class TestPersonalAccount:
     def test_account_creation(self, create_account):
@@ -132,3 +150,91 @@ class TestPersonalAccount:
             assert account.balance == sum(history) + amount
         else:
             assert account.balance == sum(history)
+
+    @pytest.mark.parametrize(
+        "accounts_to_add, expected_register",
+        [
+            (
+                [
+                    PersonalAccount("John", "Doe", "61121212121"), 
+                    PersonalAccount("John", "Doe", "11111111111"), 
+                    PersonalAccount("John", "Doe", "99999999999")
+                ],
+                [
+                    'John Doe, PESEL=61121212121',
+                    'John Doe, PESEL=11111111111',
+                    'John Doe, PESEL=99999999999'
+                ]
+            ),
+            (
+                [
+                    PersonalAccount("John", "Pork", "61121212121"), 
+                    PersonalAccount("John", "Pork", "11111111111"), 
+                    PersonalAccount("John", "Pork", "99999999999")
+                ],
+                [
+                    'John Pork, PESEL=61121212121',
+                    'John Pork, PESEL=11111111111',
+                    'John Pork, PESEL=99999999999'
+                ]
+            ),
+        ]
+    )
+    def test_add_account(self, clear_registration, accounts_to_add, expected_register):
+        register = clear_registration
+        for account in accounts_to_add:
+            register.add_account(account)
+        
+        actual = [f"{acc.first_name} {acc.last_name}, PESEL={acc.pesel}" for acc in register.get_all_accounts()]
+        assert actual == expected_register
+
+    @pytest.mark.parametrize(
+        "pesel, expected_return",
+        [
+            ("00000000000", "(John Doe, PESEL=00000000000)"),
+            ("66666666666", "(John Doe, PESEL=66666666666)"),
+            ("33333333333", "(John Doe, PESEL=33333333333)"),
+            ("12344556768", "None"),
+        ]
+    )
+    def test_find_by_pesel(self, registry_with_accounts, pesel, expected_return):
+        register = registry_with_accounts
+        assert repr(register.find_by_pesel(pesel)) == expected_return
+
+    @pytest.mark.parametrize(
+        "accounts_to_add, expected_number",
+        [
+            (
+                [
+                    PersonalAccount("John", "Pork", "61121212121"),
+                    PersonalAccount("John", "Pork", "11111111111"),
+                    PersonalAccount("John", "Pork", "99999999999"),
+                ],
+                3
+            ),
+            (
+                [
+                    PersonalAccount("John", "Pork", "61121212121"),
+                    PersonalAccount("John", "Pork", "99999999999"),
+                ],
+                2
+            ),
+            (
+                [
+                    PersonalAccount("John", "Pork", "61121212121"),
+                ],
+                1
+            ),
+            (
+                [],
+                0
+            ),
+        ]
+    )
+    def test_number_of_accounts(self, accounts_to_add, expected_number):
+        registry = AccountRegistry()
+        
+        for acc in accounts_to_add:
+            registry.add_account(acc)
+        
+        assert registry.number_of_accounts() == expected_number
