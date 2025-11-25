@@ -38,8 +38,9 @@ class PersonalAccount(Account):
             return True    
         return False
 
-    def __repr__(self):
-        return f"({self.first_name} {self.last_name}, PESEL={self.pesel})"
+    def __eq__(self, other):
+        return self.pesel == other.pesel
+
 class AccountRegistry:
     def __init__(self):
         self.accounts = []
