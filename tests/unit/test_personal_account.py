@@ -239,3 +239,16 @@ class TestPersonalAccount:
             registry.add_account(acc)
         
         assert registry.number_of_accounts() == expected_number
+
+    @pytest.mark.parametrize(
+        "account_to_remove, expected_info",
+        [
+            ("12345543211", False),
+            ("11111111111", True),
+            ("44444444444", True),
+            ("33333333333", True),
+        ]
+    )
+    def test_remove_account(self, registry_with_accounts, account_to_remove, expected_info):
+        registry = registry_with_accounts
+        assert registry.remove_account(account_to_remove) == expected_info

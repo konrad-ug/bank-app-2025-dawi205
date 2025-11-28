@@ -45,7 +45,7 @@ class AccountRegistry:
     def __init__(self):
         self.accounts = []
 
-    def add_account(self, account: PersonalAccount):
+    def add_account(self, account):
         self.accounts.append(account)
 
     def find_by_pesel(self, pesel):
@@ -59,3 +59,10 @@ class AccountRegistry:
 
     def number_of_accounts(self):
         return len(self.accounts)
+    
+    def remove_account(self, pesel):
+        for acc in self.accounts:
+            if acc.pesel == pesel:
+                self.accounts.remove(acc)
+                return True
+        return False
