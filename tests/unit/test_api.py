@@ -1,17 +1,17 @@
 import pytest
-from app import api as api_module # po AS to nadanie nazwy
+from app.api import app, registry # po AS to nadanie nazwy
 
 
 @pytest.fixture(autouse=True) # autouse=True, uruchamia się zawsze przed testem i nie trzeba przekazywać jako argument
 def clear_registry(): #czyszczenie rejestru kont
-    api_module.registry.accounts = []
+    registry.accounts = []
     yield
-    api_module.registry.accounts = []
+    registry.accounts = []
 
 
 @pytest.fixture
 def client():
-    return api_module.app.test_client() # specjalny obiekt do testowania API
+    return app.test_client() # specjalny obiekt do testowania app
 
 
 @pytest.fixture
@@ -23,12 +23,12 @@ def registry_with_accounts(client):
         {"name": "Katarzyna", "surname": "Zielińska", "pesel": "44444444444"}
     ]
     for acc in accounts:
-        resp = client.post("/api/accounts", json=acc)
+        resp = client.post("/app/accounts", json=acc)
         assert resp.status_code == 201
     return accounts
 
 
-class TestApi:
+class Testapp:
     @pytest.mark.parametrize(
         "account_to_add, expected_status_code",
         [
@@ -38,7 +38,7 @@ class TestApi:
         ]
     )
     def test_create_account(self, client, account_to_add, expected_status_code):
-        response = client.post("/api/accounts", json=account_to_add)
+        response = client.post("/app/accounts", json=account_to_add)
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
@@ -51,7 +51,7 @@ class TestApi:
         ]
     )
     def test_find_by_pesel(self, client, pesel_do_wyszukania, expected_status_code, registry_with_accounts): # test sam uruchamia registry_with_accounts, nawet pomimo niewpisania w kodzie
-        response = client.get(f"/api/accounts/{pesel_do_wyszukania}")
+        response = client.get(f"/app/accounts/{pesel_do_wyszukania}")
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
@@ -63,7 +63,7 @@ class TestApi:
         ]
     )
     def test_update_account(self, client, pesel, update, expected_status_code, registry_with_accounts):
-        response = client.patch(f"/api/accounts/{pesel}", json=update)
+        response = client.patch(f"/app/accounts/{pesel}", json=update)
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
@@ -76,5 +76,5 @@ class TestApi:
         ]
     )
     def test_delete_account(self, client, pesel, expected_status_code, registry_with_accounts):
-        response = client.delete(f"/api/accounts/{pesel}")
+        response = client.delete(f"/app/accounts/{pesel}")
         assert response.status_code == expected_status_code

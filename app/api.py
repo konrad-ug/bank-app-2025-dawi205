@@ -6,7 +6,7 @@ from src.personal_acocunt import AccountRegistry
 app = Flask(__name__)
 registry = AccountRegistry()
 
-@app.route("/api/accounts", methods=['POST'])
+@app.route("/app/accounts", methods=['POST'])
 def create_account():
     data = request.get_json()
     print(f"Create account request: {data}")
@@ -16,7 +16,7 @@ def create_account():
     return jsonify({"message": "Account created"}), 201
 
 
-@app.route("/api/accounts", methods=['GET'])
+@app.route("/app/accounts", methods=['GET'])
 def get_all_accounts():
     print("Get all accounts request received")
     accounts = registry.get_all_accounts()
@@ -26,13 +26,13 @@ def get_all_accounts():
     ]
     return jsonify(accounts_data), 200
 
-@app.route("/api/accounts/count", methods=['GET'])
+@app.route("/app/accounts/count", methods=['GET'])
 def get_account_count():
     print("Get account count request received")
     count = registry.number_of_accounts()
     return jsonify({"count": count}), 200
 
-@app.route("/api/accounts/<pesel>", methods=['GET'])
+@app.route("/app/accounts/<pesel>", methods=['GET'])
 def get_account_by_pesel(pesel):
     account = registry.find_by_pesel(pesel)
     if account:
@@ -46,7 +46,7 @@ def get_account_by_pesel(pesel):
     else:
         return jsonify({"message": "Account not found"}), 404
 
-@app.route("/api/accounts/<pesel>", methods=['PATCH'])
+@app.route("/app/accounts/<pesel>", methods=['PATCH'])
 def update_account(pesel):
     data = request.get_json()
     account = registry.find_by_pesel(pesel)
@@ -60,7 +60,7 @@ def update_account(pesel):
     else:
         return jsonify({"message": "Account not found"}), 404
 
-@app.route("/api/accounts/<pesel>", methods=['DELETE'])
+@app.route("/app/accounts/<pesel>", methods=['DELETE'])
 def delete_account(pesel):
     result = registry.remove_account(pesel)
     if result:
