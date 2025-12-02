@@ -161,9 +161,9 @@ class TestPersonalAccount:
                     PersonalAccount("John", "Doe", "99999999999")
                 ],
                 [
-                    'John Doe, PESEL=61121212121',
-                    'John Doe, PESEL=11111111111',
-                    'John Doe, PESEL=99999999999'
+                    PersonalAccount("John", "Doe", "61121212121"), 
+                    PersonalAccount("John", "Doe", "11111111111"), 
+                    PersonalAccount("John", "Doe", "99999999999")
                 ]
             ),
             (
@@ -173,33 +173,34 @@ class TestPersonalAccount:
                     PersonalAccount("John", "Pork", "99999999999")
                 ],
                 [
-                    'John Pork, PESEL=61121212121',
-                    'John Pork, PESEL=11111111111',
-                    'John Pork, PESEL=99999999999'
+                    PersonalAccount("John", "Pork", "61121212121"), 
+                    PersonalAccount("John", "Pork", "11111111111"), 
+                    PersonalAccount("John", "Pork", "99999999999")
                 ]
             ),
         ]
     )
     def test_add_account(self, clear_registration, accounts_to_add, expected_register):
         register = clear_registration
+
         for account in accounts_to_add:
             register.add_account(account)
         
-        actual = [f"{acc.first_name} {acc.last_name}, PESEL={acc.pesel}" for acc in register.get_all_accounts()]
-        assert actual == expected_register
+        assert register.get_all_accounts() == expected_register
 
     @pytest.mark.parametrize(
         "pesel, expected_return",
         [
-            ("00000000000", "(John Doe, PESEL=00000000000)"),
-            ("66666666666", "(John Doe, PESEL=66666666666)"),
-            ("33333333333", "(John Doe, PESEL=33333333333)"),
-            ("12344556768", "None"),
+            ("11111111111", PersonalAccount("John", "Doe", "11111111111")),
+            ("66666666666", PersonalAccount("John", "Doe", "66666666666")),
+            ("33333333333", PersonalAccount("John", "Doe", "33333333333")),
+            ("12344556768", None),
         ]
     )
     def test_find_by_pesel(self, registry_with_accounts, pesel, expected_return):
         register = registry_with_accounts
-        assert repr(register.find_by_pesel(pesel)) == expected_return
+        account = register.find_by_pesel(pesel)
+        assert account == expected_return
 
     @pytest.mark.parametrize(
         "accounts_to_add, expected_number",
@@ -238,3 +239,16 @@ class TestPersonalAccount:
             registry.add_account(acc)
         
         assert registry.number_of_accounts() == expected_number
+
+    @pytest.mark.parametrize(
+        "account_to_remove, expected_info",
+        [
+            ("12345543211", False),
+            ("11111111111", True),
+            ("44444444444", True),
+            ("33333333333", True),
+        ]
+    )
+    def test_remove_account(self, registry_with_accounts, account_to_remove, expected_info):
+        registry = registry_with_accounts
+        assert registry.remove_account(account_to_remove) == expected_info

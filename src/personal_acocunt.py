@@ -38,13 +38,14 @@ class PersonalAccount(Account):
             return True    
         return False
 
-    def __repr__(self):
-        return f"({self.first_name} {self.last_name}, PESEL={self.pesel})"
+    def __eq__(self, other):
+        return self.pesel == other.pesel
+
 class AccountRegistry:
     def __init__(self):
         self.accounts = []
 
-    def add_account(self, account: PersonalAccount):
+    def add_account(self, account):
         self.accounts.append(account)
 
     def find_by_pesel(self, pesel):
@@ -58,3 +59,10 @@ class AccountRegistry:
 
     def number_of_accounts(self):
         return len(self.accounts)
+    
+    def remove_account(self, pesel):
+        for acc in self.accounts:
+            if acc.pesel == pesel:
+                self.accounts.remove(acc)
+                return True
+        return False
