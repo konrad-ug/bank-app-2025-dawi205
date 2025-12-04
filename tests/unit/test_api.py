@@ -17,10 +17,10 @@ def client():
 @pytest.fixture
 def registry_with_accounts(client):
     accounts = [
-        {"name": "Jan", "surname": "Kowalski", "pesel": "11111111111"},
-        {"name": "Anna", "surname": "Nowak", "pesel": "22222222222"},
-        {"name": "Piotr", "surname": "Wiśniewski", "pesel": "33333333333"},
-        {"name": "Katarzyna", "surname": "Zielińska", "pesel": "44444444444"}
+        {"name": "Jan", "surname": "Kowalski", "pesel": "11111111111", "balance": "1000"},
+        {"name": "Anna", "surname": "Nowak", "pesel": "22222222222", "balance": "1000"},
+        {"name": "Piotr", "surname": "Wiśniewski", "pesel": "33333333333", "balance": "1000"},
+        {"name": "Katarzyna", "surname": "Zielińska", "pesel": "44444444444", "balance": "1000"}
     ]
     for acc in accounts:
         resp = client.post("/app/accounts", json=acc)
@@ -77,4 +77,49 @@ class Testapp:
     )
     def test_delete_account(self, client, pesel, expected_status_code, registry_with_accounts):
         response = client.delete(f"/app/accounts/{pesel}")
+        assert response.status_code == expected_status_code
+    
+    @pytest.mark.parametrize(
+        "account_to_add, account_to_add2, expected_status_code",
+        [
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "44444444444"},
+                201
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "22222222222"},
+                201
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                409
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                409
+            ),
+        ]
+    )
+    def test_same_pesel_again(self, client, account_to_add, account_to_add2, expected_status_code):
+        client.post("/app/accounts", json=account_to_add)
+        response = client.post("/app/accounts", json=account_to_add2)
+        assert response.status_code == expected_status_code
+
+    @pytest.mark.parametrize(
+        "pesel, transfer_body, expected_status_code",
+        [
+            ("99999999999", {"amount": 500, "type": "incoming"}, 404),  # konto nie istnieje
+            ("11111111111", {"amount": 500, "type": "incoming"}, 200),  # incoming
+            ("11111111111", {"amount": 500, "type": "outcoming"}, 200),  # outgoing udany
+            ("11111111111", {"amount": 999999, "type": "outcoming"}, 422),  # outgoing nieudany
+            ("11111111111", {"amount": 500, "type": "unknown"}, 400),
+            ("11111111111", {"amount": 500, "type": "express"}, 200),
+        ]
+    )
+    def test_api_transfers(self, client, pesel, transfer_body, expected_status_code, registry_with_accounts):
+        response = client.post(f"/app/accounts/{pesel}/transfer", json=transfer_body)
         assert response.status_code == expected_status_code
