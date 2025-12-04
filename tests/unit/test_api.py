@@ -78,3 +78,33 @@ class Testapp:
     def test_delete_account(self, client, pesel, expected_status_code, registry_with_accounts):
         response = client.delete(f"/app/accounts/{pesel}")
         assert response.status_code == expected_status_code
+    
+    @pytest.mark.parametrize(
+        "account_to_add, account_to_add2, expected_status_code",
+        [
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "44444444444"},
+                201
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "22222222222"},
+                201
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                409
+            ),
+            (
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                {"name": "John", "surname": "Pork", "pesel": "11111111111"},
+                409
+            ),
+        ]
+    )
+    def test_same_pesel_again(self, client, account_to_add, account_to_add2, expected_status_code):
+        client.post("/app/accounts", json=account_to_add)
+        response = client.post("/app/accounts", json=account_to_add2)
+        assert response.status_code == expected_status_code
